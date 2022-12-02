@@ -41,7 +41,7 @@ jobs:
         with:
           author_name: hautvfami
           author_email: hautv.fami@gmail.com
-          message: 'Update'
+          message: 'Auto update json data from job'
           add: 'data/*.json'
       # # Deploy
       # - uses: meeDamian/github-release@2.0

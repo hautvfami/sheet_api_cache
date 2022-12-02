@@ -32,11 +32,19 @@ void main(List<String> arguments) async {
 }
 
 void fetchData({String filename = '', String endpoint = ''}) async {
-  final response = await Dio().get(endpoint);
-  final data = convert.rowToJson(response.data['values'] as List);
-
   final path = 'data/${filename.toLowerCase()}.json';
-  await File(path).writeAsString(jsonEncode(data));
+  try {
+    final response = await Dio().get(endpoint);
+    final data = convert.rowToJson(response.data['values'] as List);
+    await File(path).writeAsString(jsonEncode(data));
+  } catch (e) {
+    final error = jsonEncode({
+      "status": 500,
+      "message": e.toString(),
+      "data": [],
+    });
+    await File(path).writeAsString(error);
+  }
 }
 
 String _createEndPoint({
