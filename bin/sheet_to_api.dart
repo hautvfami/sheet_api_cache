@@ -4,31 +4,49 @@ import 'dart:io';
 import 'package:sheet_to_api/convert.dart' as convert;
 import 'package:dio/dio.dart';
 
+import 'utils/branch_utils.dart';
+
+/// Google Sheet API Key
+const apiKey = "API_KEY";
+
 void main(List<String> arguments) async {
   final env = Platform.environment;
 
   final context = jsonDecode(env['SECRETS_CONTEXT'] ?? '{}');
-  final branch = (await branchName()).trim();
-  final envName = '${branch}_VARIABLES';
-  final variables = context[envName]?.split(',') ?? [];
+  final sheetApiKey = context[apiKey];
 
-  for (String variable in variables) {
-    String endpoint = context[variable] ?? '';
-    fetchData(variable: variable, endpoint: endpoint);
+  final branchName = await BranchUtil.branch;
+  final branchConfig = jsonDecode(context[branchName]);
+
+  final spreadsheetsId = branchConfig["spreadsheets_id"];
+  final sheets = branchConfig["sheet_name"];
+
+  for (String sheet in sheets) {
+    String endpoint = _createEndPoint(
+      spreadsheetsId: spreadsheetsId,
+      sheetName: sheet,
+      apiKey: sheetApiKey,
+    );
+    fetchData(filename: sheet, endpoint: endpoint);
   }
 }
 
-void fetchData({String variable = '', String endpoint = ''}) async {
+void fetchData({String filename = '', String endpoint = ''}) async {
   final response = await Dio().get(endpoint);
   final data = convert.rowToJson(response.data['values'] as List);
 
-  final filename =
-      'data/${variable.replaceAll('_ENDPOINT', '').toLowerCase()}.json';
-  await File(filename).writeAsString(jsonEncode(data));
+  final path = 'data/${filename.toLowerCase()}.json';
+  await File(path).writeAsString(jsonEncode(data));
 }
 
-Future<String> branchName() async {
-  final head = await File('.git/HEAD').readAsString();
-  final branch = head.split('/').last;
-  return branch.toUpperCase();
+String _createEndPoint({
+  String spreadsheetsId = '',
+  String sheetName = '',
+  String apiKey = '',
+  String valueRenderOption = 'UNFORMATTED_VALUE',
+}) {
+  String url = "https://sheets.googleapis.com/v4/spreadsheets/";
+  url += "$spreadsheetsId/values/$sheetName";
+  url += "?key=$apiKey&valueRenderOption=$valueRenderOption";
+  return url;
 }
