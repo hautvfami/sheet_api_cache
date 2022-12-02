@@ -2,7 +2,7 @@ Map<String, dynamic> rowToJson(List? data) {
   if (data == null || data.isEmpty) {
     return {
       'status': 404,
-      'error': 'Data not found',
+      'message': 'Data not found',
       'data': [],
     };
   }
