@@ -36,27 +36,27 @@ jobs:
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
         run: dart run
-      # Deploy
-      - uses: meeDamian/github-release@2.0
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.BRANCH_NAME }}_release
-          # name: ${{ env.BRANCH_NAME }}_release
-          allow_override: true
+          author_name: hautvfami
+          author_email: hautv.fami@gmail.com
+          message: 'Update'
+          add: 'data/*.json'
+      # # Deploy
+      # - uses: meeDamian/github-release@2.0
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     tag: ${{ env.BRANCH_NAME }}_release
+      #     # name: ${{ env.BRANCH_NAME }}_release
+      #     allow_override: true
 
-      - name: Upload binaries to release
-        uses: xresloader/upload-to-github-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          file: "data/*.json"
-          tags: true
-          tag_name: ${{ env.BRANCH_NAME }}_release
-          overwrite: true
-        # with:
-        #   repo_token: ${{ secrets.GITHUB_TOKEN }}
-        #   file: data/
-        #   tag: ${{ env.BRANCH_NAME }}_release
-        #   overwrite: true
-        #   file_glob: true
-        #   body: Build for branch
+      # - name: Upload binaries to release
+      #   uses: xresloader/upload-to-github-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     file: "data/*.json"
+      #     tags: true
+      #     tag_name: ${{ env.BRANCH_NAME }}_release
+      #     overwrite: true
