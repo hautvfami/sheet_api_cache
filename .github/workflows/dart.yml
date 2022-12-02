@@ -3,15 +3,15 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: main
+name: master
 
 on:
   # push:
   #   branches:
   #     - '*'
-  schedule:
-    - cron: "0 */2 * * *"
-  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 */2 * * *"
+  # workflow_dispatch:
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
         with:
           author_name: hautvfami
           author_email: hautv.fami@gmail.com
-          message: 'Update'
+          message: 'Auto update json data from job'
           add: 'data/*.json'
       # # Deploy
       # - uses: meeDamian/github-release@2.0
