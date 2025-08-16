@@ -9,7 +9,7 @@ import 'utils/branch_utils.dart';
 /// Google Sheet API Key
 const apiKey = "API_KEY";
 
-final config = {
+final config = <String, dynamic>{
   "spreadsheets_id": "1QzJSkjPUj78dXj32Bkok_oWx8hZNiQXmLHTk4pz1alU",
   "sheet_name": <String>["CCY", "VCB"],
 };
@@ -23,7 +23,7 @@ void main(List<String> arguments) async {
   final branchName = await BranchUtil.branch;
   final branchConfig = jsonDecode(context[branchName]);
 
-  final spreadsheetsId = config["spreadsheets_id"];
+  final spreadsheetsId = config["spreadsheets_id"] as String;
   final sheets = config["sheet_name"] as List<String>;
 
   for (String sheet in sheets) {
